@@ -140,7 +140,6 @@ export default class Slider extends React.Component {
         let objectRange = Object.entries(range);
         let length = objectRange.length;
         let index = objectRange.filter(val => (val[1].offsetX == offsetX && length > 2)); // lấy index của màu cần xóa trong object range và điều kiện là độ  dài của range trên 2
-        console.log(index)
         if (index.length > 0) {
             delete range[index[0][0]];
             let offsetMax = Object.values(range).sort(this.sort_by('offsetX', true, parseInt));
