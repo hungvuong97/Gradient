@@ -1,0 +1,43 @@
+body {
+  display: flex; 
+  justify-content: center;
+   align-items: center; 
+}
+
+.slider {
+  position: relative;
+  border-radius: 5px;
+  background: linear-gradient(left top, #E0E0E0, #EEEEEE);
+  height: 15px;
+  margin: 15px;
+}
+
+.thumb {
+  position: absolute;
+  width: 15px;
+  height: 25px;
+  border-radius: 3px;
+  top: -5px;
+  background: blue;
+  cursor: pointer;
+}
+
+#table{
+  align-items: center; 
+  margin: 20px;
+  width: 500px;
+  height: 200px;
+}
+
+#color{
+  display: flex;
+}
+
+#list_color{
+  margin: 20px;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 300px;
+  border: 1px solid #ddd;
+  padding: 8px;
+}

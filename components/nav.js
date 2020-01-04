@@ -1,56 +1,68 @@
-import React from 'react'
-import Link from 'next/link'
+// import React, { useState, useEffect, Component } from "react";
+// import { getUser } from '../redux/action/action';
+// import { connect } from 'react-redux';
+// import { bindActionCreators } from "redux";
+// class Nav extends Component {
+//     constructor(props) {
+//         super();
+//         this.state = {
+//             user: '',
+//         }
+//     }
+//     onClick = () => {
+//         this.props.getUser();
+//     }
+//     componentDidUpdate() {
+//         this.state.user = this.props.listUser;
+//     }
+//     render() {
+//         let postUser;
+//         console.log(this.state.user)
+//         if (this.state.user === null || Object.keys(this.state.user).length === 0) {
+//             postUser = (
+//                 <tr>
+//                 </tr>
 
-const links = [
-  { href: 'https://zeit.co/now', label: 'ZEIT' },
-  { href: 'https://github.com/zeit/next.js', label: 'GitHub' },
-].map(link => {
-  link.key = `nav-link-${link.href}-${link.label}`
-  return link
-})
+//             )
+//         } else {
+//             // postUser = (
+//             //     this.state.user(e => {
+//             //         <tr>
+//             //             <th>{e.name}</th>
+//             //             <th>{e.age}</th>
+//             //         </tr>
+//             //     })
 
-const Nav = () => (
-  <nav>
-    <ul>
-      <li>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-      </li>
-      {links.map(({ key, href, label }) => (
-        <li key={key}>
-          <a href={href}>{label}</a>
-        </li>
-      ))}
-    </ul>
+//             // )
+//         }
+//         return (
+//             <div>
+//                 <button onClick={this.onClick}>add </button>
+//                 <table>
+//                     <tbody><tr>
+//                         <th> Name </th>
+//                         <th> Age </th>
+//                         <th> Picture </th>
+//                         <th> Delete </th>
+//                     </tr>
 
-    <style jsx>{`
-      :global(body) {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
-          Helvetica, sans-serif;
-      }
-      nav {
-        text-align: center;
-      }
-      ul {
-        display: flex;
-        justify-content: space-between;
-      }
-      nav > ul {
-        padding: 4px 16px;
-      }
-      li {
-        display: flex;
-        padding: 6px 8px;
-      }
-      a {
-        color: #067df7;
-        text-decoration: none;
-        font-size: 13px;
-      }
-    `}</style>
-  </nav>
-)
+//                         {postUser}
 
-export default Nav
+//                     </tbody></table>
+//             </div >
+
+//         )
+//     }
+
+// }
+
+// const mapStateToProps = state => ({
+//     listUser: state.listUser
+// });
+
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         getUser: bindActionCreators(getUser, dispatch)
+//     }
+// }
+// export default connect(mapStateToProps, mapDispatchToProps)(Nav);
