@@ -1,5 +1,6 @@
 import React from 'react';
 import { SketchPicker } from 'react-color';
+import Circle from './Circle';
 import "./style.css"
 const WIDTH_SLIDER = 500;
 export default class Slider extends React.Component {
@@ -26,7 +27,9 @@ export default class Slider extends React.Component {
             },
             background: { rgba: { r: 164, g: 26, b: 58, a: 1 }, hex: '#A41A3A' },
             rangeVal: '1',
-            move: false
+            move: false,
+            first: 1,
+            angle: 90,
         }
         this.isDragging = false;
     }
@@ -49,7 +52,7 @@ export default class Slider extends React.Component {
             if (newLeft > rightEdge) {
                 newLeft = rightEdge;
             }
-            range[value].offsetX = newLeft;
+            range[value].offsetX = newLeft / 5;
 
             obj.setState({ range: range })
 
@@ -76,7 +79,7 @@ export default class Slider extends React.Component {
         let range_val = this.state.rangeVal;
         //
         temp[this.state.rangeVal] = {
-            offsetX: this.state.range[range_val].offsetX,
+            offsetX: Number(this.state.range[range_val].offsetX),
             r: color.rgb.r,
             g: color.rgb.g,
             b: color.rgb.b,
@@ -88,9 +91,27 @@ export default class Slider extends React.Component {
         background.hex = color.hex;
         this.setState({ background: background, range: temp });
     };
+
+    mixColor = (color1, color2) => {
+        let ratio = 0.5;
+        let hex = function (x) {
+            x = x.toString(16);
+            return (x.length == 1) ? '0' + x : x;
+        };
+        let r = Math.ceil(parseInt(color1.substring(0, 2), 16) * ratio + parseInt(color2.substring(0, 2), 16) * (1 - ratio));
+        let g = Math.ceil(parseInt(color1.substring(2, 4), 16) * ratio + parseInt(color2.substring(2, 4), 16) * (1 - ratio));
+        let b = Math.ceil(parseInt(color1.substring(4, 6), 16) * ratio + parseInt(color2.substring(4, 6), 16) * (1 - ratio));
+        return {
+            r: r,
+            g: g,
+            b: b,
+            a: 1,
+            hex: "#" + hex(r) + hex(g) + hex(b)
+        }
+    }
+
     // sự kiện click vào slider để thêm thumb mới.
     onDoubleClick = (e) => {
-
         if (!this.isDragging) {
             let offset = Math.round(e.nativeEvent.offsetX / 5); //lấy vị trí hiện tại trên thanh slider
             if (offset < 0) offset = 0;
@@ -101,36 +122,115 @@ export default class Slider extends React.Component {
                 var isExist = Object.values(arrayRanges[i]).find(e => e === offset);
             }
             if (!isExist) {
-                let range = Object.entries(this.state.range);
-                let index = range[range.length - 1][0]
-                const key = `${parseInt(index) + 1}`;
-                var newRange = this.state.range;
-                let background = this.state.background;
-                Object.assign(newRange, {
-                    [key]: {
-                        offsetX: offset,
-                        r: background.rgba.r,
-                        g: background.rgba.g,
-                        b: background.rgba.b,
-                        a: background.rgba.a,
-                        hex: background.hex,
+                var color = arrayRanges.sort(this.sort_by('offsetX', true, parseInt));
+                let idx = '';
+
+                if (color[0].offsetX < offset) {
+                    console.log(1)
+                    let range = Object.entries(this.state.range);
+                    let index = range[range.length - 1][0]
+                    const key = `${parseInt(index) + 1}`;
+                    var newRange = this.state.range;
+                    // let background = this.state.background;
+                    Object.assign(newRange, {
+                        [key]: {
+                            offsetX: Number(offset),
+                            r: color[0].r,
+                            g: color[0].g,
+                            b: color[0].b,
+                            a: color[0].a,
+                            hex: color[0].hex,
+                        }
+                    });
+                    this.setState({
+                        range: newRange,
+                        rangeVal: key,
+                        first: key
+                    })
+                    document.getElementById(this.state.first).style.border = '';
+
+
+                } else
+                    if (color[color.length - 1].offsetX > offset) {
+                        console.log(color[color.length - 1].offsetX, offset)
+                        console.log(2)
+                        let range = Object.entries(this.state.range);
+                        let index = range[range.length - 1][0]
+                        const key = `${parseInt(index) + 1}`;
+                        var newRange = this.state.range;
+                        // let background = this.state.background;
+                        Object.assign(newRange, {
+                            [key]: {
+                                offsetX: Number(offset),
+                                r: color[color.length - 1].r,
+                                g: color[color.length - 1].g,
+                                b: color[color.length - 1].b,
+                                a: color[color.length - 1].a,
+                                hex: color[color.length - 1].hex,
+                            }
+                        });
+
+                        this.setState({
+                            range: newRange,
+                            rangeVal: key,
+                            first: key
+                        })
+                        document.getElementById(this.state.first).style.border = '';
+
+
+                    } else {
+                        console.log(3)
+                        for (let i = color.length - 1; i >= 0; i--) {
+                            if (color[i].offsetX > offset) {
+                                idx = i;
+                                break;
+                            }
+                        };
+                        console.log(color[idx].hex, color[idx + 1].hex);
+
+                        let mixColor = this.mixColor(color[idx].hex.substr(1), color[idx + 1].hex.substr(1));
+                        let range = Object.entries(this.state.range);
+                        let index = range[range.length - 1][0]
+                        const key = `${parseInt(index) + 1}`;
+                        var newRange = this.state.range;
+                        // let background = this.state.background;
+                        Object.assign(newRange, {
+                            [key]: {
+                                offsetX: Number(offset),
+                                r: mixColor.r,
+                                g: mixColor.g,
+                                b: mixColor.b,
+                                a: mixColor.a,
+                                hex: mixColor.hex,
+                            }
+                        });
+                        // document.getElementById(this.state.first).style.border = '';
+                        // console.log(document.getElementById(key))
+                        // document.getElementById(key).style.border = '3px solid white';
+
+                        this.setState({
+                            range: newRange,
+                            rangeVal: key,
+                            first: key
+                        })
+                        document.getElementById(this.state.first).style.border = '';
+                        // console.log(document.getElementById(key))
+                        // document.getElementById(key).style.border = '3px solid white';
                     }
-                });
-                this.setState({
-                    range: newRange,
-                    rangeVal: key
-                })
             }
         }
-
 
     }
 
     // hàm lấy thumb hiện tại khi click vào
-    onClickThumb = (value) => {
+    onClickThumb = (value, range) => {
+        let background = { rgba: { r: range.r, g: range.g, b: range.b, a: range.a }, hex: range.hex };
+        this.refs[this.state.first].style.border = '';
+        Object.assign(this.refs[value].style, { border: '3px solid white' });
         this.setState({
-            rangeVal: value
-
+            rangeVal: value,
+            background: background,
+            first: Number(value)
         })
     }
 
@@ -138,13 +238,24 @@ export default class Slider extends React.Component {
     deleteColor = (offsetX) => {
         let range = this.state.range;
         let objectRange = Object.entries(range);
+        console.log(objectRange);
         let length = objectRange.length;
-        let index = objectRange.filter(val => (val[1].offsetX == offsetX && length > 2)); // lấy index của màu cần xóa trong object range và điều kiện là độ  dài của range trên 2
-        if (index.length > 0) {
-            delete range[index[0][0]];
+        let index = '';
+        if (length > 2) {
+            for (var i = 0; i < length; i++) {
+                if (objectRange[i][1].offsetX == Number(offsetX)) {
+                    index = objectRange[i][0];
+                    break;
+                }
+            }
+        }
+        if (index != '') {
+            delete range[index];
             let offsetMax = Object.values(range).sort(this.sort_by('offsetX', true, parseInt));
             let rangeVal = objectRange.filter(val => val[1].offsetX == offsetMax[0].offsetX);
-            this.setState({ range: range, rangeVal: rangeVal[0][0] })
+            document.getElementById(this.state.first).style.border = '';
+            document.getElementById(rangeVal[0][0]).style.border = '3px solid white';
+            this.setState({ range: range, rangeVal: rangeVal[0][0], first: rangeVal[0][0] })
         }
     }
     // hàm sắp xếp object, với đầu vào là filed là trường cần mong muốn sắp xếp, reverse dưới dạng boolean có muốn sắp xếp ngưowjc hay không, trường primer là trường định dạng giá trị của trường field là int hay float.... 
@@ -169,31 +280,39 @@ export default class Slider extends React.Component {
         console.log(Object.values(range).sort())
         let fillTable = Object.values(range).sort(this.sort_by('offsetX', true, parseInt));
         return (
-
             Object.values(fillTable).map((val, index) => {
                 return (
                     <tr>
-                        <td style={{ background: val.hex, width: '2px', height: '2px' }}></td>
+                        <td style={{ background: val.hex, width: '2px', height: '2px', border: '3px solid' }}></td>
                         <td>{val.hex}</td>
-                        <td>{val.offsetX / 5}</td>
+                        <td>{val.offsetX}</td>
                         <td><button onClick={() => this.deleteColor(val.offsetX)}>Delete</button></td>
                     </tr>
                 )
             })
         )
     }
+    componentDidMount() {
+        document.getElementsByClassName(`thumb`)[0].style.border = '3px solid white';
+    }
+    componentDidUpdate() {
+        console.log(this.state.first)
+        document.getElementById(this.state.first).style.border = '3px solid white';
+    }
 
+    handleAngle = (angle) => {
+        console.log(angle)
+        this.setState({ angle: angle })
+    }
     render() {
+        console.log(this.state.angle)
         const { range } = this.state;
         let val = Object.values(range);
-        let background_i = 'linear-gradient(to right, ';
-        let background = '-webkit-linear-gradient(285deg, ';
+        let background = `-webkit-linear-gradient(${this.state.angle}deg, `;
         let color_val = val.sort(this.sort_by('offsetX', true, parseInt));
         for (var i = color_val.length - 1; i >= 0; i--) {
-            background_i = background_i + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b}, ${color_val[i].a}),`
-            background = background + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b},${color_val[i].a}) ${color_val[i].offsetX / 5}%,`
+            background = background + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b},${color_val[i].a}) ${color_val[i].offsetX}%,`;
         }
-        background_i = background_i.substring(0, background_i.length - 1) + ')';
         background = background.substring(0, background.length - 1) + ')';
         Object.entries(this.state.range).map((value, index) => {
             console.log(value)
@@ -201,7 +320,7 @@ export default class Slider extends React.Component {
         return (
             <div id="example">
                 <div id="slider"
-                    style={{ width: WIDTH_SLIDER, backgroundImage: background_i }}
+                    style={{ width: WIDTH_SLIDER, background: background }}
                     className="slider"
                     ref={
                         el => this.slider = el
@@ -211,18 +330,19 @@ export default class Slider extends React.Component {
                     {Object.entries(this.state.range).map((value, index) =>
                         <div
                             name={value[0]}
+                            id={value[0]}
                             style={{
                                 left: Math.round(this.state.range[value[0]].offsetX * 5),
                                 background: `rgb(${value[1].r},${value[1].g},${value[1].b})`
                             }}
-                            className="thumb"
+                            className={`thumb ${value}`}
                             ref={
                                 value[0]
                             }
                             onMouseDown={
                                 this.onMouseDown(value[0])
                             }
-                            onClick={() => this.onClickThumb(value[0])}
+                            onClick={() => this.onClickThumb(value[0], value[1])}
                         >
                         </div>
                     )}
@@ -232,16 +352,21 @@ export default class Slider extends React.Component {
                         color={this.state.background.rgba}
                         onChangeComplete={this.handleChangeComplete}
                     />
-                    <table id="list_color">
-                        <tbody>
-                            <tr>
-                                <th>COLOR</th>
-                                <th>HEX</th>
-                                <th>STOP</th>
-                                <th>DELETE</th>
-                            </tr>
-                            {this.table()}
-                        </tbody></table>
+                    <div id='circle-table'>
+                        <table id="list_color">
+                            <tbody>
+                                <tr>
+                                    <th>COLOR</th>
+                                    <th>HEX</th>
+                                    <th>STOP</th>
+                                    <th>DELETE</th>
+                                </tr>
+                                {this.table()}
+                            </tbody></table>
+                        <Circle
+                            chooseAngle={this.handleAngle}
+                        ></Circle>
+                    </div>
                 </div>
                 <div id='table'
                     style={{ background: background }}
