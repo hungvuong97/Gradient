@@ -1,10 +1,10 @@
 import React from 'react';
 import "./style.css";
 export default class Circle extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            angle: 90,
+            angle: 35,
         }
     }
     componentDidMount() {
@@ -20,22 +20,21 @@ export default class Circle extends React.Component {
         };
 
         let transform = (function () {
-            let prefs = ['t', 'WebkitT', 'MozT', 'msT', 'OT'];
-            let style = document.documentElement.style;
-            let p
-            for (var i = 0, len = prefs.length; i < len; i++) {
-                if ((p = prefs[i] + 'ransform') in style) return p
-            }
+            let p = 'transform';
+            return p
         })();
-        picker.style[transform] = 'rotate(90deg)'
+        picker.style[transform] = `rotate(35deg)`;
+
         let rotate = function (x, y) {
+            console.log(x, y)
+            console.log(center.x, center.y)
             let deltaX = x - center.x;
             let deltaY = y - center.y;
             let angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI
+            console.log(angle)
             return angle
         };
 
-        // DRAGSTART
         let mousedown = (event) => {
             event.preventDefault()
             document.body.style.cursor = 'default'
@@ -44,14 +43,13 @@ export default class Circle extends React.Component {
             document.addEventListener('mouseup', mouseup)
         };
 
-        // DRAG
-        let mousemove = function (event) {
+        let mousemove = (event) => {
             obj.setState({ angle: rotate(event.pageX, event.pageY) });
             obj.handleAngle();
-            picker.style[transform] = 'rotate(' + rotate(event.pageX, event.pageY) + 'deg)'
+            let deg = rotate(event.pageX, event.pageY) - 55;
+            picker.style[transform] = 'rotate(' + deg + 'deg)'
         };
 
-        // DRAGEND
         let mouseup = function () {
             document.body.style.cursor = null;
             document.removeEventListener('mouseup', mouseup)
@@ -60,21 +58,26 @@ export default class Circle extends React.Component {
 
 
 
-        // DRAG START
         pickerCircle.addEventListener('mousedown', mousedown)
 
-        // ENABLE STARTING THE DRAG IN THE BLACK CIRCLE
+
         circle.addEventListener('mousedown', function (event) {
             if (event.target == this) mousedown(event)
 
         })
     }
+    componentDidUpdate() {
+        let picker = document.getElementById('picker');
+        picker.style['transform'] = `rotate(${this.props.angle - 55}deg)`;
+
+    }
+
     handleAngle = () => {
-        console.log(1)
         this.props.chooseAngle(this.state.angle)
     }
 
     render() {
+        console.log(this.props.angle)
         return (
             <div id="circle">
                 <div id="picker"

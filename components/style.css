@@ -76,3 +76,18 @@ body {
   margin: 0 3px 0 auto;
   cursor: default;
 }
+
+
+#change{
+  display: flex;
+}
+#input{
+  width:70px;
+  height: 30px;
+  margin: 15px 30px;
+  border-radius: 10%;
+  border-style: solid;
+  border-color: gray;
+
+
+}

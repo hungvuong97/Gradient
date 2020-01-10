@@ -1,7 +1,9 @@
 import React from 'react';
 import { SketchPicker } from 'react-color';
 import Circle from './Circle';
+import Input from './Input';
 import "./style.css"
+import { throws } from 'assert';
 const WIDTH_SLIDER = 500;
 export default class Slider extends React.Component {
     constructor(props) {
@@ -304,6 +306,11 @@ export default class Slider extends React.Component {
         console.log(angle)
         this.setState({ angle: angle })
     }
+
+    editAngle = (value) => {
+        console.log(value)
+        this.setState({ angle: value })
+    }
     render() {
         console.log(this.state.angle)
         const { range } = this.state;
@@ -363,9 +370,13 @@ export default class Slider extends React.Component {
                                 </tr>
                                 {this.table()}
                             </tbody></table>
-                        <Circle
-                            chooseAngle={this.handleAngle}
-                        ></Circle>
+                        <div id='change'>
+                            <Circle
+                                chooseAngle={this.handleAngle}
+                                angle={this.state.angle}
+                            ></Circle>
+                            <Input angle={this.state.angle} editAngle={this.editAngle}></Input>
+                        </div>
                     </div>
                 </div>
                 <div id='table'
