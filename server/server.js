@@ -83,32 +83,36 @@ router.delete('/deleteUser/:id', async (ctx, next) => {
     }
 });
 
-// app.use(async function (ctx, next) {
-//     await next();
-//     console.log(3);
-//     console.log(1);
-// });
-
-// app.use(async (ctx, next) => {
-//     console.log('in here');
-//     await next();
-//     console.log('out here');
-// })
-
-// // response
-// app.use(async (ctx, next) => {
-//     await next();
-//     console.log(2);
 
 
-// });
 
-// app.use(async (ctx, next) => {
-//     const start = Date.now();
-//     await next();
-//     const ms = Date.now() - start;
-//     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
-//   });
+
+app.use(async function (ctx, next) {
+    await next();
+    console.log(3);
+    console.log(1);
+});
+
+app.use(async (ctx, next) => {
+    console.log('in here');
+    await next();
+    console.log('out here');
+})
+
+// response
+app.use(async (ctx, next) => {
+    await next();
+    console.log(2);
+
+
+});
+
+app.use(async (ctx, next) => {
+    const start = Date.now();
+    await next();
+    const ms = Date.now() - start;
+    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+});
 
 
 
