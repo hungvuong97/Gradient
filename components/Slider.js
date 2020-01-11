@@ -8,29 +8,12 @@ export default class Slider extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            range: {
-                1: {
-                    offsetX: 15,
-                    r: 34,
-                    g: 27,
-                    b: 32,
-                    a: 1,
-                    hex: '#221B20'
-                },
-                2: {
-                    offsetX: 50,
-                    r: 134,
-                    g: 57,
-                    b: 62,
-                    a: 1,
-                    hex: '#86393E'
-                }
-            },
+            range: '',
             background: { rgba: { r: 164, g: 26, b: 58, a: 1 }, hex: '#A41A3A' },
             rangeVal: '1',
             move: false,
             first: 1,
-            angle: 0,
+            angle: 90,
         }
         this.isDragging = false;
     }
@@ -210,6 +193,7 @@ export default class Slider extends React.Component {
             }
         }
 
+
     }
 
     // hàm lấy thumb hiện tại khi click vào
@@ -294,39 +278,12 @@ export default class Slider extends React.Component {
         return hex
     }
 
+    componentWillMount() {
+        this.setState({ range: this.props.range, angle: this.props.angle })
+    }
     componentDidMount() {
-        if (Object.keys(this.props).length) {
-            let { r, g, b, a, offsetX } = this.props;
-            const arrayRanges = Object.values(this.state.range);
-            for (let i = 0; i < arrayRanges.length; i++) {
-                var isExist = Object.values(arrayRanges[i]).find(e => e === offsetX);
-            }
-            if (!isExist) {
-                var color = arrayRanges.sort(this.sort_by('offsetX', true, parseInt));
-                let idx = '';
 
-                let range = Object.entries(this.state.range);
-                let index = range[range.length - 1][0]
-                const key = `${parseInt(index) + 1}`;
-                var newRange = this.state.range;
-                // let background = this.state.background;
-                Object.assign(newRange, {
-                    [key]: {
-                        offsetX: Number(offsetX),
-                        r: r,
-                        g: g,
-                        b: b,
-                        a: a,
-                        hex: this.rgbToHex(r, g, b),
-                    }
-                });
-                this.setState({
-                    range: newRange,
-                    rangeVal: key,
-                    first: key
-                })
-            }
-        }
+        document.getElementsByClassName(`thumb`)[0].style.border = '3px solid white';
     }
     componentDidUpdate() {
         document.getElementById(this.state.first).style.border = '3px solid white';

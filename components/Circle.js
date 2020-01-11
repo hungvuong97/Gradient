@@ -7,6 +7,9 @@ export default class Circle extends React.Component {
             angle: -55,
         }
     }
+    componentWillMount() {
+        this.setState({ angle: this.props.angle })
+    }
     componentDidMount() {
         const obj = this
         let circle = document.getElementById('circle');
@@ -23,7 +26,7 @@ export default class Circle extends React.Component {
             let p = 'transform';
             return p
         })();
-        picker.style[transform] = `rotate(-55deg)`;
+        picker.style[transform] = `rotate(${this.state.angle - 60}deg)`;
 
         let rotate = function (x, y) {
             console.log(x, y)

@@ -5,7 +5,7 @@ export default class Input extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            inputValue: 90,
+            inputValue: 0,
         }
     }
     componentDidMount() {
