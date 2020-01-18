@@ -1,7 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import Slider from '../components/Slider'
-import { throws } from 'assert';
+// import Test from '../components/Test'
 // import Gradient from '../components/Gradient'
 
 class Home extends React.Component {
@@ -26,7 +26,7 @@ class Home extends React.Component {
                     hex: '#86393E'
                 },
             },
-            angle: 90
+            angle: 0
         }
     }
     render() {

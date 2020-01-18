@@ -13,12 +13,13 @@ export default class Slider extends React.Component {
             rangeVal: '1',
             move: false,
             first: 1,
-            angle: 90,
+            angle: 0,
         }
         this.isDragging = false;
     }
 
     onMouseDown = value => event => {
+        event = event || window.event;
         event.preventDefault();
         const obj = this;
         // this.setState({ move: true })
@@ -32,9 +33,9 @@ export default class Slider extends React.Component {
             if (newLeft < 0) {
                 newLeft = 0;
             }
-            let rightEdge = obj.slider.offsetWidth - obj.refs[value].offsetWidth; // tinhs độ dài của slider nếu thumb di chuyển vượt quá slider
-            if (newLeft > rightEdge) {
-                newLeft = rightEdge;
+            // let rightEdge = obj.slider.offsetWidth - obj.refs[value].offsetWidth; // tinhs độ dài của slider nếu thumb di chuyển vượt quá slider
+            if (newLeft > 500) {
+                newLeft = 500;
             }
             range[value].offsetX = newLeft / 5;
 
@@ -95,7 +96,7 @@ export default class Slider extends React.Component {
     }
 
     // sự kiện click vào slider để thêm thumb mới.
-    onDoubleClick = (e) => {
+    onClick = (e) => {
         if (!this.isDragging) {
             let offset = Math.round(e.nativeEvent.offsetX / 5); //lấy vị trí hiện tại trên thanh slider
             if (offset < 0) offset = 0;
@@ -188,19 +189,16 @@ export default class Slider extends React.Component {
                             first: key
                         })
                         document.getElementById(this.state.first).style.border = '';
-
                     }
             }
         }
-
-
     }
 
     // hàm lấy thumb hiện tại khi click vào
     onClickThumb = (value, range) => {
         let background = { rgba: { r: range.r, g: range.g, b: range.b, a: range.a }, hex: range.hex };
         this.refs[this.state.first].style.border = '';
-        Object.assign(this.refs[value].style, { border: '3px solid white' });
+        Object.assign(this.refs[value].style, { border: '0.7px solid white' });
         this.setState({
             rangeVal: value,
             background: background,
@@ -227,7 +225,7 @@ export default class Slider extends React.Component {
             let offsetMax = Object.values(range).sort(this.sort_by('offsetX', true, parseInt));
             let rangeVal = objectRange.filter(val => val[1].offsetX == offsetMax[0].offsetX);
             document.getElementById(this.state.first).style.border = '';
-            document.getElementById(rangeVal[0][0]).style.border = '3px solid white';
+            document.getElementById(rangeVal[0][0]).style.border = '0px solid white';
             this.setState({ range: range, rangeVal: rangeVal[0][0], first: rangeVal[0][0] })
         }
     }
@@ -255,7 +253,7 @@ export default class Slider extends React.Component {
             Object.values(fillTable).map((val, index) => {
                 return (
                     <tr>
-                        <td style={{ background: val.hex, width: '2px', height: '2px', border: '3px solid' }}></td>
+                        <td style={{ background: val.hex, width: '2px', height: '2px', border: '0.7px solid white' }}></td>
                         <td>{val.hex}</td>
                         <td>{val.offsetX}</td>
                         <td><button onClick={() => this.deleteColor(val.offsetX)}>Delete</button></td>
@@ -283,10 +281,10 @@ export default class Slider extends React.Component {
     }
     componentDidMount() {
 
-        document.getElementsByClassName(`thumb`)[0].style.border = '3px solid white';
+        document.getElementsByClassName(`thumb`)[0].style.border = '0.7px solid white';
     }
     componentDidUpdate() {
-        document.getElementById(this.state.first).style.border = '3px solid white';
+        document.getElementById(this.state.first).style.border = '0.7px solid white';
     }
 
     handleAngle = (angle) => {
@@ -312,13 +310,18 @@ export default class Slider extends React.Component {
         return (
             <div id="example">
                 <div id="slider"
-                    style={{ width: WIDTH_SLIDER, background: background2 }}
+                    style={{}}
                     className="slider"
                     ref={
                         el => this.slider = el
                     }
-                    onDoubleClick={this.onDoubleClick}
+
                 >
+                    <div id="fillColor"
+                        style={{ width: WIDTH_SLIDER, background: background2 }}
+                        onClick={this.onClick}>
+
+                    </div>
                     {Object.entries(this.state.range).map((value, index) =>
                         <div
                             name={value[0]}
