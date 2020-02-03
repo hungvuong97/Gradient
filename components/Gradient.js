@@ -35,18 +35,15 @@ class Range extends React.Component {
     }
     clickRange(e) {
         this.props.clickRange(e.target.value)
-        console.log(e.offsetX)
     }
     render() {
-        const { range, val, color } = this.props;
-        console.log(color)
+        const { range, val } = this.props;
         let background_i = 'linear-gradient(to right, ';
         let color_val = val.sort(this.sort_by('offsetX', true, parseInt));
         for (var i = color_val.length - 1; i >= 0; i--) {
             background_i = background_i + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b}, ${color_val[i].a}),`
         }
         background_i = background_i.substring(0, background_i.length - 1) + ')'
-        console.log(background_i)
         return (
             <div>
                 <input id="range" type="range"
@@ -96,7 +93,6 @@ export default class Gradient extends React.Component {
     handleChangeComplete = (color) => {
         let temp = this.state.range;
         let range_val = this.state.rangeVal;
-        console.log(range_val)
         temp[this.state.rangeVal] = {
             offsetX: this.state.range[range_val].offsetX,
             r: color.rgb.r,
@@ -114,14 +110,11 @@ export default class Gradient extends React.Component {
         })
     }
     updateRange = (key) => (val) => {
-        console.log(val, key)
         this.isDragging = true;
         let t = this.state.range[key];
         t.offsetX = val;
         let temp = this.state.range;
         temp[key] = t;
-        console.log(temp)
-        console.log(key);
         this.setState({
             range: temp,
             rangeVal: key
@@ -142,7 +135,6 @@ export default class Gradient extends React.Component {
             for (let i = 0; i < arrayRanges.length; i++) {
                 var isExist = Object.values(arrayRanges[i]).find(e => e === offset);
             }
-            // const isExist = arrayRanges.find(e => e === offset);
             if (!isExist) {
                 const key = `rangeVal_${arrayRanges.length + 1}`;
                 var t = this.state.range;
@@ -185,16 +177,14 @@ export default class Gradient extends React.Component {
 
 
     render() {
-        const { rangeVal_1, rangeVal_2, background } = this.state;
+        const { background } = this.state;
         let val = Object.values(this.state.range);
         let background_image = '-webkit-linear-gradient(285deg, ';
         let color_val = val.sort(this.sort_by('offsetX', true, parseInt));
-        console.log(color_val)
         for (var i = color_val.length - 1; i >= 0; i--) {
             background_image = background_image + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b}) ${color_val[i].offsetX}%,`
         }
         background_image = background_image.substring(0, background_image.length - 1) + ')'
-        console.log(background_image)
         return (
             <div id='container'>
                 <div id='test' style={{

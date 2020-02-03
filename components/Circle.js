@@ -29,8 +29,6 @@ export default class Circle extends React.Component {
         picker.style[transform] = `rotate(${this.state.angle - 60}deg)`;
 
         let rotate = function (x, y) {
-            console.log(x, y)
-            console.log(center.x, center.y)
             let deltaX = x - center.x;
             let deltaY = y - center.y;
             let angle = Math.round(Math.atan2(deltaY, deltaX) * 180 / Math.PI)
@@ -80,15 +78,10 @@ export default class Circle extends React.Component {
     }
 
     render() {
-        console.log(this.props.angle)
         return (
             <div id="circle">
-                <div id="picker"
-                // onClick={this.handleAngle}
-                >
-                    <div id="picker-circle"
-
-                    >
+                <div id="picker">
+                    <div id="picker-circle">
                     </div>
                 </div>
             </div>

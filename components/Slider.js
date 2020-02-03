@@ -22,18 +22,15 @@ export default class Slider extends React.Component {
         event = event || window.event;
         event.preventDefault();
         const obj = this;
-        // this.setState({ move: true })
         let range = this.state.range
         let shiftX = event.clientX - this.refs[value].getBoundingClientRect().left; // lấy khoảng cách giữa thumb và đầu slider
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
         function onMouseMove(event) {
             let newLeft = event.clientX - shiftX - obj.slider.getBoundingClientRect().left; // độ dịch chuyển mới so với vị trị cũ của thumb
-            // console.log(event.clientX, shiftX, obj.slider.getBoundingClientRect().left)
             if (newLeft < 0) {
                 newLeft = 0;
             }
-            // let rightEdge = obj.slider.offsetWidth - obj.refs[value].offsetWidth; // tinhs độ dài của slider nếu thumb di chuyển vượt quá slider
             if (newLeft > 500) {
                 newLeft = 500;
             }
@@ -47,8 +44,6 @@ export default class Slider extends React.Component {
         }
 
         function onMouseUp(e) {
-            // setTimeout(obj.setState({ move: true }), 10000)
-            // obj.setState({ move: false })
             document.removeEventListener('mouseup', onMouseUp);
             document.removeEventListener('mousemove', onMouseMove);
         }
@@ -109,13 +104,11 @@ export default class Slider extends React.Component {
             if (!isExist) {
                 var color = arrayRanges.sort(this.sort_by('offsetX', true, parseInt));
                 let idx = '';
-
                 if (color[0].offsetX < offset) {
                     let range = Object.entries(this.state.range);
                     let index = range[range.length - 1][0]
                     const key = `${parseInt(index) + 1}`;
                     var newRange = this.state.range;
-                    // let background = this.state.background;
                     Object.assign(newRange, {
                         [key]: {
                             offsetX: Number(offset),
@@ -126,10 +119,12 @@ export default class Slider extends React.Component {
                             hex: color[0].hex,
                         }
                     });
+                    let background = { rgba: { r: color[0].r, g: color[0].g, b: color[0].b, a: color[0].a }, hex: color[0].hex };
                     this.setState({
                         range: newRange,
                         rangeVal: key,
-                        first: key
+                        first: key,
+                        background: background
                     })
                     document.getElementById(this.state.first).style.border = '';
 
@@ -140,7 +135,6 @@ export default class Slider extends React.Component {
                         let index = range[range.length - 1][0]
                         const key = `${parseInt(index) + 1}`;
                         var newRange = this.state.range;
-                        // let background = this.state.background;
                         Object.assign(newRange, {
                             [key]: {
                                 offsetX: Number(offset),
@@ -151,11 +145,12 @@ export default class Slider extends React.Component {
                                 hex: color[color.length - 1].hex,
                             }
                         });
-
+                        let background = { rgba: { r: color[color.length - 1].r, g: color[color.length - 1].g, b: color[color.length - 1].b, a: color[color.length - 1].a }, hex: color[color.length - 1].hex };
                         this.setState({
                             range: newRange,
                             rangeVal: key,
-                            first: key
+                            first: key,
+                            background: background
                         })
                         document.getElementById(this.state.first).style.border = '';
 
@@ -172,7 +167,6 @@ export default class Slider extends React.Component {
                         let index = range[range.length - 1][0]
                         const key = `${parseInt(index) + 1}`;
                         var newRange = this.state.range;
-                        // let background = this.state.background;
                         Object.assign(newRange, {
                             [key]: {
                                 offsetX: Number(offset),
@@ -183,10 +177,13 @@ export default class Slider extends React.Component {
                                 hex: mixColor.hex,
                             }
                         });
+                        let background = { rgba: { r: mixColor.r, g: mixColor.g, b: mixColor.b, a: mixColor.a }, hex: mixColor.hex };
+
                         this.setState({
                             range: newRange,
                             rangeVal: key,
-                            first: key
+                            first: key,
+                            background: background
                         })
                         document.getElementById(this.state.first).style.border = '';
                     }
